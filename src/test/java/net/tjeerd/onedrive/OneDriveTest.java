@@ -6,9 +6,12 @@ import net.tjeerd.onedrive.enums.FriendlyNamesEnum;
 import net.tjeerd.onedrive.json.User;
 import net.tjeerd.onedrive.json.folder.Data;
 import net.tjeerd.onedrive.json.folder.Folder;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +21,7 @@ import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 public class OneDriveTest {
-    private static final String ONEDRIVE_PROPERTIESFILE = "onedrive.properties";
+    private static final String ONEDRIVE_PROPERTIESFILE = "/home/vagrant/.OneDriveAPI/onedrive.properties";
     private static final String ONEDRIVE_TESTFILE = "onedrivetestfile.docx";
     private static OneDrive oneDriveAPI;
     private static Principal principal;
@@ -27,7 +30,8 @@ public class OneDriveTest {
     public static void readPropertiesAndInitializeOneDriveAPI() throws IOException {
         Properties properties = new Properties();
 
-        InputStream inputStream = OneDriveTest.class.getClassLoader().getResourceAsStream(ONEDRIVE_PROPERTIESFILE);
+        // InputStream inputStream = OneDriveTest.class.getClassLoader().getResourceAsStream(ONEDRIVE_PROPERTIESFILE);
+        FileInputStream inputStream = new FileInputStream(new File(ONEDRIVE_PROPERTIESFILE));
         properties.load(inputStream);
 
         if (inputStream == null) {
@@ -92,7 +96,7 @@ public class OneDriveTest {
     
     @Test
     public void uploadLargeFileTest() throws Exception {
-        java.io.File oneDriveTestfile = new java.io.File(getClass().getClassLoader().getResource("dummy5MB.img").getFile());
+        java.io.File oneDriveTestfile = new java.io.File("/home/vagrant/dummy5MB.img");
         net.tjeerd.onedrive.json.largefile.CreatedLargeFile oneDriveFile;
 
         oneDriveFile = oneDriveAPI.uploadLargeFile(oneDriveTestfile, "");
@@ -100,5 +104,27 @@ public class OneDriveTest {
         System.out.println(oneDriveFile.getName());
         System.out.println(oneDriveFile.getSize());
         assertNotNull(oneDriveFile);
+    }
+    
+    @Test
+    public void getFileListTest() throws Exception {
+        Folder folder =  oneDriveAPI.getFileList("");
+        
+        for (Data data : folder.getData()) {
+            System.out.println(data.getName());
+        }
+        
+        assertNotNull(folder);
+    }
+    
+    @Test
+    public void getFileByNameTest() throws Exception {
+        net.tjeerd.onedrive.json.folder.File file = oneDriveAPI.getFileByName("", "dummy5MB.img");
+        
+        System.out.println(file.getName());
+        System.out.println(file.getId());
+        
+        assertNotNull(file);
+        oneDriveAPI.downloadFile(file, "dummy5MB_copy.img");
     }
 }

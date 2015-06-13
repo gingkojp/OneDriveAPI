@@ -1,13 +1,16 @@
 package net.tjeerd.onedrive.core;
 
 import com.sun.jersey.api.client.Client;
+
 import net.tjeerd.onedrive.enums.FriendlyNamesEnum;
 import net.tjeerd.onedrive.exception.RestException;
 import net.tjeerd.onedrive.json.Quota;
 import net.tjeerd.onedrive.json.SharedLink;
 import net.tjeerd.onedrive.json.User;
 import net.tjeerd.onedrive.json.folder.Folder;
+import net.tjeerd.onedrive.json.largefile.File;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public interface OneDriveAPI {
@@ -73,6 +76,16 @@ public interface OneDriveAPI {
     Folder getFileList(String folderId) throws Exception;
 
     /**
+     * Get a file with specified name in the specified folder. 
+     * 
+     * @param folderId folder identifier or friendly name
+     * @param fileName file friendly name in the folder
+     * @return the found file if it missed, return null
+     * @throws Exception
+     */
+    net.tjeerd.onedrive.json.folder.File getFileByName(String folderId, String  fileName) throws Exception;
+    
+    /**
      * Download a OneDriveAPI file and store the file in the destination file path.
      *
      * @param oneDriveFile OneDriveAPI file object
@@ -80,6 +93,16 @@ public interface OneDriveAPI {
      */
     void downloadFile(net.tjeerd.onedrive.json.folder.File oneDriveFile, String destinationFilePath);
 
+    /**
+     * Download a OneDriveAPI file with specified name and store the file in the destination file path.
+     * 
+     * @param folderId folder identifier or friendly name
+     * @param fileName file friendly name in the folder
+     * @param destinationFilePath destination file path to store the downloaded file
+     * @throws Exception
+     */
+    void donwloadFileByName(String folderId, String fileName, String destinationFilePath) throws Exception;
+    
     /**
      * Get a OneDriveAPI file object holding all file details.
      *

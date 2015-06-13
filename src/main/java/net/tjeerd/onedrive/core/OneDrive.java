@@ -15,6 +15,7 @@ import net.tjeerd.onedrive.exception.RestException;
 import net.tjeerd.onedrive.json.Quota;
 import net.tjeerd.onedrive.json.SharedLink;
 import net.tjeerd.onedrive.json.User;
+import net.tjeerd.onedrive.json.folder.Data;
 import net.tjeerd.onedrive.json.folder.Folder;
 import net.tjeerd.onedrive.json.largefile.Accepted;
 import net.tjeerd.onedrive.json.largefile.CreatedLargeFile;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -198,9 +200,12 @@ public class OneDrive implements OneDriveAPI {
      * {@inheritDoc}
      */
     public Folder getFileList(String folderId) throws Exception {
-        return (Folder) oneDriveCore.doGetAPI(new MultivaluedMapImpl(), MediaType.APPLICATION_JSON, folderId + "/" + API_PATH_FILES, new Folder());
+        return (Folder) oneDriveCore.doGetAPI(new MultivaluedMapImpl(), MediaType.APPLICATION_JSON, API_PATH_ME_SKYDRIVE + "/" +  folderId + "/" + API_PATH_FILES, new Folder());
     }
 
+    
+    
+    
     /**
      * {@inheritDoc}
      */
@@ -445,5 +450,34 @@ public class OneDrive implements OneDriveAPI {
         }
 
         return (SharedLink) oneDriveCore.doGetAPI(new MultivaluedMapImpl(), MediaType.APPLICATION_JSON, apiPath, new SharedLink());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public net.tjeerd.onedrive.json.folder.File getFileByName(String folderId, String fileName) throws Exception {
+        Folder folder = this.getFileList(folderId);
+        net.tjeerd.onedrive.json.folder.File returnFile = null;
+        
+        for (Data data : folder.getData()) {
+            if(data.getName().equals(fileName)) {
+                returnFile = new net.tjeerd.onedrive.json.folder.File(data);
+            }
+        }
+        
+        if(returnFile == null) {
+            throw new FileNotFoundException();
+        }
+        
+        return returnFile;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void donwloadFileByName(String folderId, String fileName, String destinationFilePath) throws Exception {
+        net.tjeerd.onedrive.json.folder.File file = this.getFileByName(folderId, fileName);
+        
+        downloadFile(file, destinationFilePath);
     }
 }
