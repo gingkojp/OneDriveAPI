@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata modelVersion="1.1.0">
-  <groupId>OneDriveAPI</groupId>
+  <groupId>jp.dip.ginko</groupId>
   <artifactId>OneDriveAPI</artifactId>
   <version>1.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20150516.160904</timestamp>
-      <buildNumber>2</buildNumber>
+      <timestamp>20150613.091427</timestamp>
+      <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20150516160904</lastUpdated>
+    <lastUpdated>20150613091427</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>1.0-20150516.160904-2</value>
-        <updated>20150516160904</updated>
+        <value>1.0-20150613.091427-1</value>
+        <updated>20150613091427</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>1.0-20150516.160904-2</value>
-        <updated>20150516160904</updated>
+        <value>1.0-20150613.091427-1</value>
+        <updated>20150613091427</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>

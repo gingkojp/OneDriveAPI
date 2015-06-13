@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <groupId>OneDriveAPI</groupId>
+  <groupId>jp.dip.ginko</groupId>
   <artifactId>OneDriveAPI</artifactId>
   <versioning>
     <versions>
       <version>1.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20150516160904</lastUpdated>
+    <lastUpdated>20150613091427</lastUpdated>
   </versioning>
 </metadata>
