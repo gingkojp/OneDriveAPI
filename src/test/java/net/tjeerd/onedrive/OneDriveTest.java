@@ -125,6 +125,6 @@ public class OneDriveTest {
         System.out.println(file.getId());
         
         assertNotNull(file);
-        oneDriveAPI.downloadFile(file, "dummy5MB_copy.img");
+        oneDriveAPI.downloadFile(file, "dummy5MB_copy2.img");
     }
 }
