@@ -15,6 +15,7 @@ import net.tjeerd.onedrive.exception.RestException;
 import net.tjeerd.onedrive.json.Quota;
 import net.tjeerd.onedrive.json.SharedLink;
 import net.tjeerd.onedrive.json.User;
+import net.tjeerd.onedrive.json.folder.Data;
 import net.tjeerd.onedrive.json.folder.Folder;
 import net.tjeerd.onedrive.json.largefile.Accepted;
 import net.tjeerd.onedrive.json.largefile.CreatedLargeFile;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,6 +53,7 @@ public class OneDrive implements OneDriveAPI {
 
     private static final String API_PATH_LARGE_FILE_ROOT = "drive/root:/%s:/upload.createSession";
     private static final String API_PATH_LARGE_FILE_FOLDER = "drive/items/%s:/%s/upload.createSession";
+    private static final String API_PATH_ROOT = "drive/root:";
     /**
      * 10MB = 10 * 1024 * 1024
      */
@@ -198,7 +201,31 @@ public class OneDrive implements OneDriveAPI {
      * {@inheritDoc}
      */
     public Folder getFileList(String folderId) throws Exception {
-        return (Folder) oneDriveCore.doGetAPI(new MultivaluedMapImpl(), MediaType.APPLICATION_JSON, folderId + "/" + API_PATH_FILES, new Folder());
+        return (Folder) oneDriveCore.doGetAPI(new MultivaluedMapImpl(), MediaType.APPLICATION_JSON, API_PATH_ME_SKYDRIVE + "/" + folderId + "/" + API_PATH_FILES, new Folder());
+        // MultivaluedMap<String, String> queryParams = new
+        // MultivaluedMapImpl();
+        // ObjectMapper objectMapper = new ObjectMapper();
+        // WebResource webResource = null;
+        // ClientResponse clientResponse = null;
+        // String apiPath = null;
+        //
+        // // Begin large file upload session
+        // queryParams.add(OneDriveCore.API_PARAM_ACCESS_TOKEN,
+        // principal.getoAuth20Token().getAccess_token());
+        // webResource =
+        // client.resource(OneDriveEnum.API_URL_ONEDRIVE.toString() +
+        // API_PATH_ROOT + "/" + "backup" + "/children");
+        //
+        // clientResponse =
+        // webResource.queryParams(queryParams).type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+        //
+        // if (clientResponse.getStatusInfo().getFamily() !=
+        // javax.ws.rs.core.Response.Status.Family.SUCCESSFUL) {
+        // throw new net.tjeerd.onedrive.exception.RestException();
+        // }
+        // return
+        // objectMapper.readValue(clientResponse.getEntity(String.class).toString(),
+        // Folder.class);
     }
 
     /**
@@ -331,7 +358,6 @@ public class OneDrive implements OneDriveAPI {
      * {@inheritDoc}
      */
     public net.tjeerd.onedrive.json.largefile.CreatedLargeFile uploadLargeFile(File file, String folderId) throws Exception {
-        
         net.tjeerd.onedrive.json.largefile.CreatedLargeFile createdFile = null;
         MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
         UploadSession uploadSession = new UploadSession();
@@ -394,7 +420,6 @@ public class OneDrive implements OneDriveAPI {
         } catch (Exception e) {
             logger.error("Cannot upload file '" + file.getAbsolutePath() + "' to OneDriveAPI");
             e.printStackTrace();
-            
             // Cancel the upload session by requesting "DELETE" method.
             clientResponse = webResource.queryParams(queryParams).type(MediaType.APPLICATION_JSON).delete(ClientResponse.class);
         } finally {
@@ -445,5 +470,34 @@ public class OneDrive implements OneDriveAPI {
         }
 
         return (SharedLink) oneDriveCore.doGetAPI(new MultivaluedMapImpl(), MediaType.APPLICATION_JSON, apiPath, new SharedLink());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public net.tjeerd.onedrive.json.folder.File getFileByName(String folderId, String fileName) throws Exception {
+        Folder folder = this.getFileList(folderId);
+        net.tjeerd.onedrive.json.folder.File returnFile = null;
+
+        for (Data data : folder.getData()) {
+            if (data.getName().equals(fileName)) {
+                returnFile = new net.tjeerd.onedrive.json.folder.File(data);
+            }
+        }
+
+        if (returnFile == null) {
+            throw new FileNotFoundException();
+        }
+
+        return returnFile;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void donwloadFileByName(String folderId, String fileName, String destinationFilePath) throws Exception {
+        net.tjeerd.onedrive.json.folder.File file = this.getFileByName(folderId, fileName);
+
+        downloadFile(file, destinationFilePath);
     }
 }

@@ -51,6 +51,52 @@ public class Data  {
     //Fileds for video files (some the same as image)
     private int	bitrate;
     
+    public Data(Data data) {
+        client_updated_time = data.getClient_updated_time();
+        comments_count = data.getComments_count();
+        comments_enabled = data.getComments_enabled();
+        created_time = data.getCreated_time();
+        description = data.getDescription();
+        from = data.getFrom();
+        id = data.getId();
+        is_embeddable = data.getIs_embeddable();
+        count = data.getCount();
+        link = data.getLink();
+        name = data.getName();
+        parent_id = data.getParent_id();
+        shared_with = data.getShared_with();
+        size = data.getSize();
+        source = data.getSource();
+        type = data.getType();
+        updated_time = data.getUpdated_time();
+        upload_location = data.getUpload_location();
+        
+        
+        // Fields for music files
+        title = data.getTitle();
+        artist = data.getArtist();
+        album = data.getAlbum();
+        album_artist = data.getAlbum_artist();
+        genre = data.getGenre();
+        duration = data.getDuration();
+        picture = data.getPicture();
+        tags_count = data.getTags_count();
+        tags_enabled = data.isTags_enabled();
+        images = data.getImages();
+        
+        // Fields for image files
+        when_taken = data.getWhen_taken();
+        height = data.getHeight();
+        width = data.getWidth();
+        location = data.getLocation();
+        camera_make = data.getCamera_make();
+        camera_model = data.getCamera_model();
+        focal_ratio = data.getFocal_ratio();
+        focal_length = data.getFocal_length();
+        exposure_numerator = data.getExposure_numerator();
+        exposure_denominator = data.getExposure_denominator();
+    }
+    
     public Data(String id) {
         this.id = id;
     }

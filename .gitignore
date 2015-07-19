@@ -1,4 +1,5 @@
 *.iml
+*.img
 *.class
 .classpath
 .project

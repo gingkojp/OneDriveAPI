@@ -6,6 +6,10 @@ public class File extends Data {
         super(id);
     }
     
+    public File(Data data) {
+        super(data);
+    }
+    
     public File() {
     }
 }
