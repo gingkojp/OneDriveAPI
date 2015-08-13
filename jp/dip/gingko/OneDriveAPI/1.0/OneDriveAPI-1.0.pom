@@ -42,8 +42,6 @@
       <configuration>
         <message>Maven artifacts for ${project.version}</message>
         <noJekyll>true</noJekyll>
-        <!--  jp/dip/gingko is same to ${groupId}  -->
-<!--         <outputDirectory>${project.build.directory}/mvn-repo/jp/dip/gingko/${artifactId}</outputDirectory> -->
         <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
         <branch>refs/heads/mvn-repo</branch>
         <includes>
