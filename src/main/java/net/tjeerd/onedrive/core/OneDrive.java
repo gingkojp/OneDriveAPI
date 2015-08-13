@@ -23,6 +23,7 @@ import net.tjeerd.onedrive.json.largefile.UploadSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,12 +59,14 @@ public class OneDrive implements OneDriveAPI {
      * 10MB = 10 * 1024 * 1024
      */
     private static final int LARGE_FILE_FRAGMENT_MAX_SIZE = 10 * 1024 * 1024;
-    private static final HashMap<String, String> LARGE_FILE_POST_REQUEST_BODY = new HashMap<String, String>() {
-        private static final long serialVersionUID = -5800640500118562565L;
-        {
-            put("@name.conflictBehavior", "rename");
-        }
-    };
+//    private static final JSONObject LARGE_FILE_POST_REQUEST_BODY = new JSONObject().put("item", new JSONObject().put("@name.conflictBehavior", "rename"));
+//    private static final HashMap<String, String> LARGE_FILE_POST_REQUEST_BODY = new HashMap<String, String>() {
+//        private static final long serialVersionUID = -5800640500118562565L;
+//        {
+//            //put("item", "{@name.conflictBehavior : rename}");
+//            put("@name.conflictBehavior", "rename");
+//        }
+//    };
 
     /**
      * Construct the OneDriveAPI API with the principal as argument.
@@ -378,11 +381,18 @@ public class OneDrive implements OneDriveAPI {
         }
 
         try {
+            // To start large file upload session, post following json.
+            //"item" : {
+            //   "@name.conflictBehavior" : "replace"
+            //}
+            final JSONObject LARGE_FILE_POST_REQUEST_BODY = new JSONObject().put("item", new JSONObject().put("@name.conflictBehavior", "replace"));
+            
             // Begin large file upload session
             queryParams.add(OneDriveCore.API_PARAM_ACCESS_TOKEN, principal.getoAuth20Token().getAccess_token());
             webResource = client.resource(OneDriveEnum.API_URL_ONEDRIVE.toString() + apiPath);
 
-            clientResponse = webResource.queryParams(queryParams).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, objectMapper.writeValueAsString(LARGE_FILE_POST_REQUEST_BODY));
+            clientResponse = webResource.queryParams(queryParams).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, 
+                    LARGE_FILE_POST_REQUEST_BODY.toString());
 
             if (clientResponse.getStatusInfo().getFamily() != javax.ws.rs.core.Response.Status.Family.SUCCESSFUL) {
                 throw new net.tjeerd.onedrive.exception.RestException();

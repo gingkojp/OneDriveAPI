@@ -13,15 +13,17 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 public class OneDriveTest {
-    private static final String ONEDRIVE_PROPERTIESFILE = "/home/vagrant/.OneDriveAPI/onedrive.properties";
+    private static final String ONEDRIVE_PROPERTIESFILE = "/var/workspace/onedrive.properties";
     private static final String ONEDRIVE_TESTFILE = "onedrivetestfile.docx";
     private static OneDrive oneDriveAPI;
     private static Principal principal;
@@ -96,14 +98,23 @@ public class OneDriveTest {
     
     @Test
     public void uploadLargeFileTest() throws Exception {
-        java.io.File oneDriveTestfile = new java.io.File("/home/vagrant/dummy5MB.img");
         net.tjeerd.onedrive.json.largefile.CreatedLargeFile oneDriveFile;
+        // Crate test file.
+        java.io.File oneDriveTestfile = new java.io.File("dummy.img");
+        FileWriter fw = new FileWriter(oneDriveTestfile);
+        fw.write(new char[1024 * 1024]);
+        fw.flush();
+        fw.close();
 
+        try {
         oneDriveFile = oneDriveAPI.uploadLargeFile(oneDriveTestfile, "");
         
         System.out.println(oneDriveFile.getName());
         System.out.println(oneDriveFile.getSize());
         assertNotNull(oneDriveFile);
+        } finally {
+            oneDriveTestfile.delete();
+        }
     }
     
     @Test
